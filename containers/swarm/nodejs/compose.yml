@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+
+  nodejs-app:
+    image: node:20.9.0-alpine
+    working_dir: /usr/src/app
+    volumes:
+      - ./app:/usr/src/app
+    networks:
+      - overlay
+    command: sh -c "npm i && npm run start"
+    deploy:
+      mode: replicated
+      replicas: 2
+      update_config:
+        order: start-first
+        failure_action: rollback
+        delay: 5s
+    healthcheck:
+      test: curl -sS http://127.0.0.1:3000 || echo 1
+      interval: 10s
+      timeout: 3s
+      retries: 30
+
+networks:
+  overlay:
+    external: true
+    name: simple-deploy-overlay

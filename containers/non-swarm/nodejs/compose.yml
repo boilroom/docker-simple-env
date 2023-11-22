@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+
+  nodejs-app:
+    image: node:20.9.0-alpine
+    working_dir: /usr/src/app
+    volumes:
+      - ./app:/usr/src/app
+    networks:
+      - bridge
+    command: sh -c "npm i && npm run start"
+
+networks:
+  bridge:
+    external: true
+    name: simple-deploy-bridge

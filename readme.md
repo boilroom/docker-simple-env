@@ -55,3 +55,7 @@ If we have an application written in Node.js and running in another container (l
 ### Networking between containers in Nginx Proxy Manager
 
 Suppose you have a container with an application that listens on port `3001`. In your compose.in the yml file, it has the service name `mygreatapp`. And you want to make it respond when a request is made to your domain somedomain.com . To do this, you create a new proxy host in the Nginx Proxy Manager control panel (initially available at `YOUR_SERVER_IP:81` or `localhost:81`). In the "Forward Hostname / IP" field, specify `mygreatapp` (or `tasks.mygreatapp.` if it's SWARM), and as the port - 3001. Save. After that, your application should be available at http://somedomain.com. You can read about other settings on the Nginx Proxy Manager [page on github](https://github.com/NginxProxyManager/nginx-proxy-manager) or on the [project website](https://nginxproxymanager.com/). Done!
+
+## Example containers
+
+In the `./containers` directory there are two variants of compose files for creating a Node.js containers. One of them creates a regular container, the other creates a SWARM container. There are `deploy.sh` files for both options, which can help in the implementation of zero-downtime deployment of Node.js application. More details — in their readme.md
