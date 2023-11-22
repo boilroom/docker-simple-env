@@ -1,0 +1,51 @@
+# Do not use on REAL production! Read the readme.md file before using!
+version: '3.8'
+services:
+
+  dse-nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    networks:
+      - bridge
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./data/nginx-proxy-manage/data:/data
+      - ./data/nginx-proxy-manage/letsencrypt:/etc/letsencrypt
+
+  dse-redis:
+    image: 'redis:alpine'
+    restart: unless-stopped
+    networks:
+      - bridge
+
+  dse-db:
+    image: mariadb:latest
+    restart: unless-stopped
+    networks:
+      - bridge
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+
+  dse-phpmyadmin:
+    image: ${PHP_ADMIN_IMAGE}
+    restart: unless-stopped
+    networks:
+      - bridge
+    depends_on:
+      - dse-db
+    environment:
+      - PMA_HOST=dse-db
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
+networks:
+  bridge:
+    external: true
+    name: simple-deploy-bridge
